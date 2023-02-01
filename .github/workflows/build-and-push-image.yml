@@ -25,7 +25,10 @@ jobs:
     name: Build and push to ghcr.io
     runs-on:
       - ubuntu-latest
-      - [self-hosted, linux, '${{ matrix.arch }}', cpu4]
+      - self-hosted
+      - linux
+      - ${{ matrix.arch }}
+      - cpu4
     permissions:
       packages: write
     strategy:

@@ -16,7 +16,10 @@ jobs:
     name: ${{ inputs.name }} (${{ matrix.arch }})
     runs-on:
       - ubuntu-latest
-      - [self-hosted, linux, '${{ matrix.arch }}', cpu4]
+      - self-hosted
+      - linux
+      - ${{ matrix.arch }}
+      - cpu4
     strategy:
       fail-fast: true
       matrix:
