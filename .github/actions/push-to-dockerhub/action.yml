@@ -26,6 +26,9 @@ runs:
   using: composite
   steps:
 
+    - name: Setup runner environment
+      uses: ./.github/actions/setup-runner-env
+
     - name: Free up disk space
       if: ${{ !contains(runner.name, 'rapidsai') }}
       uses: ./.github/actions/free-disk-space
