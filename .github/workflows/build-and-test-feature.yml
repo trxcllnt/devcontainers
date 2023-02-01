@@ -15,11 +15,11 @@ jobs:
   test:
     name: ${{ inputs.name }} (${{ matrix.arch }})
     runs-on:
-      - ubuntu-latest
-      - self-hosted
-      - linux
-      - ${{ matrix.arch }}
-      - cpu4
+      - ${{ github.repository != 'rapidsai/devcontainers' && 'ubuntu-latest' || '' }}
+      - ${{ github.repository == 'rapidsai/devcontainers' && 'self-hosted' || '' }}
+      - ${{ github.repository == 'rapidsai/devcontainers' && 'linux' || '' }}
+      - ${{ github.repository == 'rapidsai/devcontainers' && matrix.arch || '' }}
+      - ${{ github.repository == 'rapidsai/devcontainers' && 'cpu4' || '' }}
     strategy:
       fail-fast: true
       matrix:
