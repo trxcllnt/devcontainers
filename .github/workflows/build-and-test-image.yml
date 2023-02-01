@@ -23,7 +23,7 @@ jobs:
 
   build-and-test:
     name: Build and test
-    runs-on: ${{ github.repository == 'rapidsai/devcontainers' && [self-hosted, linux, ${{ matrix.arch }}, cpu4] || [ubuntu-latest] }}
+    runs-on: ${{ fromJSON(github.repository == 'rapidsai/devcontainers' && [self-hosted, linux, ${{ matrix.arch }}, cpu4] || [ubuntu-latest]) }}
     strategy:
       fail-fast: true
       matrix:
