@@ -18,6 +18,10 @@ on:
       MAMBA:
         type: string
         required: true
+      repository:
+        type: string
+        required: true
+        description: Docker Hub repository
 
 jobs:
 
@@ -80,5 +84,6 @@ jobs:
         with:
           archs: "amd64 arm64"
           tag: "${{ steps.info.outputs.tag }}"
+          repository: "${{ inputs.repository }}"
           username: "${{ secrets.GPUCIBOT_DOCKERHUB_USER }}"
           password: "${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}"
