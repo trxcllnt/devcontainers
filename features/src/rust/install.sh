@@ -4,6 +4,8 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
+echo "This is an update";
+
 UPDATE_RC="${UPDATERC:-"true"}";
 UPDATE_RUST="${UPDATERUST:-"false"}";
 RUST_VERSION="${VERSION:-"latest"}";
