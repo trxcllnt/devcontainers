@@ -1,6 +1,8 @@
 #! /usr/bin/env bash
 set -e
 
+echo "this is an update"
+
 MAMBAFORGE_VERSION="${VERSION:-latest}";
 
 # Ensure we're in this feature's directory during build
