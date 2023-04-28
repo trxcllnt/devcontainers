@@ -28,6 +28,7 @@
   - features: [{ name: "gcc",  version: "12" }, { name: "cuda", version: "12.1" }]
   - features: [{ name: "llvm", version: "15" }, { name: "cuda", version: "12.1" }]
   - features: [{ name: "llvm", version: "16" }, { name: "cuda", version: "12.1" }]
+  - features: [{ name: "llvm", version: "17" }, { name: "cuda", version: "12.1" }]
 
 # RAPIDS devcontainers
 
