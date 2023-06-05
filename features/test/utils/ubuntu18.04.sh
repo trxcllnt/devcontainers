@@ -64,15 +64,15 @@ write_good_creds() {
 }
 
 expect_s3_cache_is_used() {
-    sccache --stop-server >/dev/null 2>&1 || true \
- && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1 \
-  | grep -qE 'Cache location \s+ s3';
+    local output="$(sccache --stop-server 2>&1 || true && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1)"; \
+    echo "output:"; echo "${output}";
+    grep -qE 'Cache location \s+ s3' <<< "${output}";
 }
 
 expect_local_disk_cache_is_used() {
-    sccache --stop-server >/dev/null 2>&1 || true \
- && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1 \
-  | grep -qE 'Cache location \s+ Local disk';
+    local output="$(sccache --stop-server 2>&1 || true && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1)"; \
+    echo "output:"; echo "${output}";
+    grep -qE 'Cache location \s+ Local disk' <<< "${output}";
 }
 
 if test -n "${sccache_bucket_ci:-}"; then
