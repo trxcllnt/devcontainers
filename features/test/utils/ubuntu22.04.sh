@@ -14,6 +14,7 @@ source dev-container-features-test-lib
 
 >&2 echo "PATH=$PATH"
 >&2 echo "BASH_ENV=$BASH_ENV"
+export VAULT_S3_TTL="${VAULT_S3_TTL:-"3600s"}";
 
 # Feature-specific tests
 # The 'check' command comes from the dev-container-features-test-lib.
@@ -76,87 +77,78 @@ expect_local_disk_cache_is_used() {
 
 if test -n "${sccache_bucket_ci:-}"; then
 
-    check "no creds with SCCACHE_BUCKET uses local disk cache" \
-        reset_state                                            \
-     && SCCACHE_BUCKET="${sccache_bucket_ci}"                  \
-        SCCACHE_REGION="${sccache_region_ci}"                  \
-        devcontainer-utils-post-attach-command                 \
-     && expect_local_disk_cache_is_used;
+    reset_state                            \
+ && SCCACHE_BUCKET="${sccache_bucket_ci}"  \
+    SCCACHE_REGION="${sccache_region_ci}"  \
+    devcontainer-utils-post-attach-command ;
+    check "no creds with SCCACHE_BUCKET uses local disk cache" expect_local_disk_cache_is_used;
 
-    check "bad creds and config and no VAULT_HOST uses local disk cache" \
-        reset_state                                                      \
-     && write_bad_creds                                                  \
-     && SCCACHE_BUCKET="${sccache_bucket_ci}"                            \
-        SCCACHE_REGION="${sccache_region_ci}"                            \
-        devcontainer-utils-post-attach-command                           \
-     && expect_local_disk_cache_is_used;
+    reset_state                            \
+ && write_bad_creds                        \
+ && SCCACHE_BUCKET="${sccache_bucket_ci}"  \
+    SCCACHE_REGION="${sccache_region_ci}"  \
+    devcontainer-utils-post-attach-command ;
+    check "bad creds and config and no VAULT_HOST uses local disk cache" expect_local_disk_cache_is_used;
 
-    check "bad creds with SCCACHE_BUCKET and no VAULT_HOST uses local disk cache" \
-        reset_state                                                               \
-     && write_bad_creds                                                           \
-     && SCCACHE_BUCKET="${sccache_bucket_ci}"                                     \
-        SCCACHE_REGION="${sccache_region_ci}"                                     \
-        devcontainer-utils-post-attach-command                                    \
-     && expect_local_disk_cache_is_used;
+    reset_state                            \
+ && write_bad_creds                        \
+ && SCCACHE_BUCKET="${sccache_bucket_ci}"  \
+    SCCACHE_REGION="${sccache_region_ci}"  \
+    devcontainer-utils-post-attach-command ;
+    check "bad creds with SCCACHE_BUCKET and no VAULT_HOST uses local disk cache" expect_local_disk_cache_is_used;
 
     if test -n "${aws_access_key_id:-}" \
     && test -n "${aws_secret_access_key:-}"; then
-        check "existing creds and config uses S3 cache" \
-            reset_state                                 \
-         && write_good_creds                            \
-         && devcontainer-utils-post-attach-command      \
-         && expect_s3_cache_is_used;
+        reset_state                            \
+     && write_good_creds                       \
+     && devcontainer-utils-post-attach-command ;
+        check "existing creds and config uses S3 cache" expect_s3_cache_is_used;
 
-        check "Existing creds and config with SCCACHE_BUCKET uses S3 cache" \
-            reset_state                                                     \
-         && sccache_bucket= sccache_region= write_good_creds                \
-         && SCCACHE_BUCKET="${sccache_bucket_ci}"                           \
-            SCCACHE_REGION="${sccache_region_ci}"                           \
-            devcontainer-utils-post-attach-command                          \
-         && expect_s3_cache_is_used;
+        reset_state                                            \
+     && sccache_bucket_ci= sccache_region_ci= write_good_creds \
+     && SCCACHE_BUCKET="${sccache_bucket_ci}"                  \
+        SCCACHE_REGION="${sccache_region_ci}"                  \
+        devcontainer-utils-post-attach-command                 ;
+        check "Existing creds and config with SCCACHE_BUCKET uses S3 cache" expect_s3_cache_is_used;
 
     fi
 fi
 
 if test -n "${vault_host:-}" \
 && test -n "${sccache_bucket_gh:-}"; then
-    check "VAULT_HOST with no SCCACHE_BUCKET uses local disk cache" \
-        reset_state                                                 \
-     && VAULT_HOST="${vault_host}"                                  \
-        devcontainer-utils-post-attach-command                      \
-     && expect_local_disk_cache_is_used;
+    reset_state                            \
+ && VAULT_HOST="${vault_host}"             \
+    devcontainer-utils-post-attach-command ;
+    check "VAULT_HOST with no SCCACHE_BUCKET uses local disk cache" expect_local_disk_cache_is_used;
 
     if test -n "${gh_token:-}"; then
-        check "no creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should generate credentials" \
-            reset_state                                                                            \
-         && GH_TOKEN="${gh_token}"                                                                 \
-            VAULT_HOST="${vault_host}"                                                             \
-            SCCACHE_BUCKET="${sccache_bucket_gh}"                                                  \
-            SCCACHE_REGION="${sccache_region_gh}"                                                  \
-            devcontainer-utils-post-attach-command                                                 \
-         && expect_s3_cache_is_used;
+        reset_state                            \
+     && GH_TOKEN="${gh_token}"                 \
+        VAULT_HOST="${vault_host}"             \
+        SCCACHE_BUCKET="${sccache_bucket_gh}"  \
+        SCCACHE_REGION="${sccache_region_gh}"  \
+        devcontainer-utils-post-attach-command ;
+        check "no creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should generate credentials" expect_s3_cache_is_used;
 
-        check "bad stored creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should regenerate credentials" \
-            reset_state                                                                                      \
-         && write_bad_creds                                                                                  \
-         && GH_TOKEN="${gh_token}"                                                                           \
-            VAULT_HOST="${vault_host}"                                                                       \
-            SCCACHE_BUCKET="${sccache_bucket_gh}"                                                            \
-            SCCACHE_REGION="${sccache_region_gh}"                                                            \
-            devcontainer-utils-post-attach-command                                                           \
-         && expect_s3_cache_is_used;
+        reset_state                            \
+     && write_bad_creds                        \
+     && GH_TOKEN="${gh_token}"                 \
+        VAULT_HOST="${vault_host}"             \
+        SCCACHE_BUCKET="${sccache_bucket_gh}"  \
+        SCCACHE_REGION="${sccache_region_gh}"  \
+        devcontainer-utils-post-attach-command ;
+        check "bad stored creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should regenerate credentials" expect_s3_cache_is_used;
 
-        check "bad envvar creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should regenerate credentials" \
-            reset_state                                                                                      \
-         && GH_TOKEN="${gh_token}"                                                                           \
-            VAULT_HOST="${vault_host}"                                                                       \
-            SCCACHE_BUCKET="${sccache_bucket_gh}"                                                            \
-            SCCACHE_REGION="${sccache_region_gh}"                                                            \
-            AWS_ACCESS_KEY_ID="bad_aws_access_key_id"                                                        \
-            AWS_SESSION_TOKEN="bad_aws_session_token"                                                        \
-            AWS_SECRET_ACCESS_KEY="bad_aws_secret_access_key"                                                \
-            devcontainer-utils-post-attach-command                                                           \
-         && expect_s3_cache_is_used;
+        reset_state                                       \
+     && GH_TOKEN="${gh_token}"                            \
+        VAULT_HOST="${vault_host}"                        \
+        SCCACHE_BUCKET="${sccache_bucket_gh}"             \
+        SCCACHE_REGION="${sccache_region_gh}"             \
+        AWS_ACCESS_KEY_ID="bad_aws_access_key_id"         \
+        AWS_SESSION_TOKEN="bad_aws_session_token"         \
+        AWS_SECRET_ACCESS_KEY="bad_aws_secret_access_key" \
+        devcontainer-utils-post-attach-command            ;
+        check "bad envvar creds with GH_TOKEN, VAULT_HOST, and SCCACHE_BUCKET should regenerate credentials" expect_s3_cache_is_used;
     fi
 fi
 
