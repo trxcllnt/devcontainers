@@ -21,6 +21,7 @@ test_aws_creds() {
 
     local region="${SCCACHE_REGION:-"$(grep 'region=' ~/.aws/config 2>/dev/null | sed 's/region=//' || echo "${AWS_DEFAULT_REGION:-}")"}";
     local aws_access_key_id="${AWS_ACCESS_KEY_ID:-"$(grep 'aws_access_key_id=' ~/.aws/credentials 2>/dev/null | sed 's/aws_access_key_id=//' || echo)"}";
+    local aws_session_token="${AWS_SESSION_TOKEN:-"$(grep 'aws_session_token=' ~/.aws/credentials 2>/dev/null | sed 's/aws_session_token=//' || echo)"}";
     local aws_secret_access_key="${AWS_SECRET_ACCESS_KEY:-"$(grep 'aws_secret_access_key=' ~/.aws/credentials 2>/dev/null | sed 's/aws_secret_access_key=//' || echo)"}";
 
     sccache --stop-server >/dev/null 2>&1 || true;
@@ -28,12 +29,14 @@ test_aws_creds() {
     if ! \
        SCCACHE_NO_DAEMON=1 \
        AWS_ACCESS_KEY_ID=${aws_access_key_id} \
+       AWS_SESSION_TOKEN=${aws_session_token} \
        AWS_SECRET_ACCESS_KEY=${aws_secret_access_key} \
        SCCACHE_BUCKET=${bucket} SCCACHE_REGION=${region} \
        sccache --show-stats 2>&1 | grep -qE 'Cache location \s+ s3'; then
         if SCCACHE_NO_DAEMON=1 \
            SCCACHE_S3_NO_CREDENTIALS=1 \
            AWS_ACCESS_KEY_ID=${aws_access_key_id} \
+           AWS_SESSION_TOKEN=${aws_session_token} \
            AWS_SECRET_ACCESS_KEY=${aws_secret_access_key} \
            SCCACHE_BUCKET=${bucket} SCCACHE_REGION=${region} \
            sccache --show-stats 2>&1 | grep -qE 'Cache location \s+ s3'; then

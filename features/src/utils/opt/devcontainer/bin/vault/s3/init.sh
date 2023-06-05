@@ -11,6 +11,7 @@ vault_s3_init() {
     fi
 
     local aws_access_key_id="${AWS_ACCESS_KEY_ID:-}";
+    local aws_session_token="${AWS_SESSION_TOKEN:-}";
     local aws_secret_access_key="${AWS_SECRET_ACCESS_KEY:-}";
 
     # Remove existing credentials in case vault declines to issue new ones.
@@ -27,8 +28,9 @@ vault_s3_init() {
         source devcontainer-utils-init-github-cli;
 
         if [ -z "${GITHUB_USER:-}" ]; then
-            AWS_ACCESS_KEY_ID="${aws_access_key_id}" \
-            AWS_SECRET_ACCESS_KEY="${aws_secret_access_key}" \
+            AWS_ACCESS_KEY_ID="${aws_access_key_id:-}" \
+            AWS_SESSION_TOKEN="${aws_session_token:-}" \
+            AWS_SECRET_ACCESS_KEY="${aws_secret_access_key:-}" \
                 devcontainer-utils-vault-s3-export;
             return;
         fi
@@ -76,9 +78,10 @@ vault_s3_init() {
                 -H "X-Vault-Token: $vault_token"    \
                 -H "Content-Type: application/json" \
                 "${VAULT_HOST}/$uri?ttl=$ttl"       \
-            | jq -r '.data'                           \
+            | jq -r '.data'                         \
         )";
 
+        aws_session_token="";
         aws_access_key_id="$(echo "${aws_creds}" | jq -r '.access_key')";
         aws_secret_access_key="$(echo "${aws_creds}" | jq -r '.secret_key')";
 
@@ -91,6 +94,7 @@ vault_s3_init() {
             echo "Failed to retrieve AWS S3 credentials. Skipping." >&2;
             return;
         fi
+
     fi
 
     if [ "${aws_access_key_id:-null}" = "null" ]; then
@@ -116,16 +120,18 @@ EOF
 
     cat <<EOF > ~/.aws/credentials
 [default]
-aws_access_key_id=${aws_access_key_id}
-aws_secret_access_key=${aws_secret_access_key}
+aws_access_key_id=${aws_access_key_id:-}
+aws_session_token=${aws_session_token:-}
+aws_secret_access_key=${aws_secret_access_key:-}
 EOF
 
     chmod 0600 ~/.aws/{config,credentials};
 
     echo "Successfully generated temporary AWS S3 credentials!";
 
-    AWS_ACCESS_KEY_ID="${aws_access_key_id}" \
-    AWS_SECRET_ACCESS_KEY="${aws_secret_access_key}" \
+    AWS_ACCESS_KEY_ID="${aws_access_key_id:-}" \
+    AWS_SESSION_TOKEN="${aws_session_token:-}" \
+    AWS_SECRET_ACCESS_KEY="${aws_secret_access_key:-}" \
         devcontainer-utils-vault-s3-export "0";
 }
 
