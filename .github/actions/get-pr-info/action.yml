@@ -35,6 +35,6 @@ runs:
                     return branch.split('/')[1];
                 }
                 throw new Error(`Could not determine pull request number.`);
-              })();
+              })()
             })
           ).data;
