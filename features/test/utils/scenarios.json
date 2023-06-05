@@ -2,6 +2,18 @@
   "ubuntu18.04": {
     "image": "ubuntu:18.04",
     "remoteUser": "coder",
+    "containerEnv": {
+      "gh_token": "${localEnv:gh_token}",
+      "vault_host": "${localEnv:vault_host}",
+      "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
+      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
+      "sccache_region_gh": "${localEnv:sccache_region_gh}",
+      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
+      "sccache_region_ci": "${localEnv:sccache_region_ci}",
+      "aws_access_key_id": "${localEnv:aws_access_key_id}",
+      "aws_session_token": "${localEnv:aws_session_token}",
+      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+    },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
         "uid": "1000",
@@ -38,6 +50,18 @@
   "ubuntu20.04": {
     "image": "ubuntu:20.04",
     "remoteUser": "coder",
+    "containerEnv": {
+      "gh_token": "${localEnv:gh_token}",
+      "vault_host": "${localEnv:vault_host}",
+      "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
+      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
+      "sccache_region_gh": "${localEnv:sccache_region_gh}",
+      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
+      "sccache_region_ci": "${localEnv:sccache_region_ci}",
+      "aws_access_key_id": "${localEnv:aws_access_key_id}",
+      "aws_session_token": "${localEnv:aws_session_token}",
+      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+    },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
         "uid": "1000",
@@ -74,6 +98,18 @@
   "ubuntu22.04": {
     "image": "ubuntu:22.04",
     "remoteUser": "coder",
+    "containerEnv": {
+      "gh_token": "${localEnv:gh_token}",
+      "vault_host": "${localEnv:vault_host}",
+      "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
+      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
+      "sccache_region_gh": "${localEnv:sccache_region_gh}",
+      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
+      "sccache_region_ci": "${localEnv:sccache_region_ci}",
+      "aws_access_key_id": "${localEnv:aws_access_key_id}",
+      "aws_session_token": "${localEnv:aws_session_token}",
+      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+    },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
         "uid": "1000",
