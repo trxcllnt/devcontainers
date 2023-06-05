@@ -7,7 +7,7 @@
 #     --base-image ubuntu:22.04 .'
 # ```
 
-set -e
+set -ex
 
 # Optional: Import test library bundled with the devcontainer CLI
 source dev-container-features-test-lib
@@ -69,11 +69,15 @@ expect_s3_cache_is_used() {
     grep -qE 'Cache location \s+ s3' <<< "${output}";
 }
 
+export -f expect_s3_cache_is_used;
+
 expect_local_disk_cache_is_used() {
     local output="$(sccache --stop-server 2>&1 || true && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1)"; \
     echo "output:"; echo "${output}";
     grep -qE 'Cache location \s+ Local disk' <<< "${output}";
 }
+
+export -f expect_local_disk_cache_is_used;
 
 if test -n "${sccache_bucket_ci:-}"; then
 
