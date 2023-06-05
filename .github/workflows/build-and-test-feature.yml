@@ -29,3 +29,12 @@ jobs:
         uses: ./.github/actions/build-and-test-feature
         with:
           args: "${{ inputs.args }}"
+          gh_token: "${{ secrets.WORKFLOW_TOKEN }}"
+          vault_host: "${{ secrets.WORKFLOW_TOKEN && 'https://vault.ops.k8s.rapids.ai' || '' }}"
+          sccache_bucket_gh: "${{ secrets.WORKFLOW_TOKEN && 'rapids-sccache-devs' || '' }}"
+          sccache_region_gh: us-east-2
+          aws_session_token: "${{ env.AWS_SESSION_TOKEN || '' }}"
+          aws_access_key_id: "${{ env.AWS_ACCESS_KEY_ID || secrets.AWS_ACCESS_KEY_ID || '' }}"
+          aws_secret_access_key: "${{ env.AWS_SECRET_ACCESS_KEY || secrets.AWS_SECRET_ACCESS_KEY || '' }}"
+          sccache_bucket_ci: "${{ env.AWS_ACCESS_KEY_ID || secrets.AWS_ACCESS_KEY_ID && 'rapids-sccache-east' || '' }}"
+          sccache_region_ci: us-east-2

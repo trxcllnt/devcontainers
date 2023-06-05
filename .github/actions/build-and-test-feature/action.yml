@@ -3,9 +3,16 @@ name: test-feature
 description: Test feature
 
 inputs:
-  args:
-    type: string
-    required: true
+  args: {type: string, required: true}
+  gh_token: {type: string, defaut: '', required: false}
+  vault_host: {type: string, defaut: '', required: false}
+  sccache_bucket_gh: {type: string, defaut: '', required: false}
+  sccache_region_gh: {type: string, defaut: '', required: false}
+  aws_session_token: {type: string, defaut: '', required: false}
+  aws_access_key_id: {type: string, defaut: '', required: false}
+  aws_secret_access_key: {type: string, defaut: '', required: false}
+  sccache_bucket_ci: {type: string, defaut: '', required: false}
+  sccache_region_ci: {type: string, defaut: '', required: false}
 
 runs:
   using: composite
@@ -34,12 +41,12 @@ runs:
       env:
         NODE_NO_WARNINGS: 1
         VAULT_S3_TTL: "3600s" # 1 hour
-        gh_token: "${{ secrets.WORKFLOW_TOKEN }}"
-        vault_host: "${{ secrets.WORKFLOW_TOKEN && 'https://vault.ops.k8s.rapids.ai' || '' }}"
-        sccache_bucket_gh: "${{ secrets.WORKFLOW_TOKEN && 'rapids-sccache-devs' || '' }}"
-        sccache_region_gh: us-east-2
-        aws_session_token: "${{ env.AWS_SESSION_TOKEN || '' }}"
-        aws_access_key_id: "${{ env.AWS_ACCESS_KEY_ID || secrets.AWS_ACCESS_KEY_ID || '' }}"
-        aws_secret_access_key: "${{ env.AWS_SECRET_ACCESS_KEY || secrets.AWS_SECRET_ACCESS_KEY || '' }}"
-        sccache_bucket_ci: "${{ env.AWS_ACCESS_KEY_ID || secrets.AWS_ACCESS_KEY_ID && 'rapids-sccache-east' || '' }}"
-        sccache_region_ci: us-east-2
+        gh_token: "${{ inputs.gh_token }}"
+        vault_host: "${{ inputs.vault_host }}"
+        sccache_bucket_gh: "${{ inputs.sccache_bucket_gh }}"
+        sccache_region_gh: "${{ inputs.sccache_region_gh }}"
+        aws_session_token: "${{ inputs.aws_session_token }}"
+        aws_access_key_id: "${{ inputs.aws_access_key_id }}"
+        aws_secret_access_key: "${{ inputs.aws_secret_access_key }}"
+        sccache_bucket_ci: "${{ inputs.sccache_bucket_ci }}"
+        sccache_region_ci: "${{ inputs.sccache_region_ci }}"
