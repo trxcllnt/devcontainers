@@ -38,7 +38,7 @@ runs:
           .github/actions/build-image/action.yml
 #           .github/actions/image-matrix/action.sh
 #           .github/actions/image-matrix/action.yml
-          .github/workflows/build-and-test-image.yml
+#           .github/workflows/build-and-test-image.yml
 
     - name: Report changes
       if: inputs.full_matrix != 'true'
