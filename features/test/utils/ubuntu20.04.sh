@@ -14,6 +14,7 @@ source dev-container-features-test-lib
 
 >&2 echo "PATH=$PATH"
 >&2 echo "BASH_ENV=$BASH_ENV"
+>&2 echo "user=$(whoami)"
 export VAULT_S3_TTL="${VAULT_S3_TTL:-"3600s"}";
 
 # Feature-specific tests
@@ -64,7 +65,14 @@ write_good_creds() {
 }
 
 expect_s3_cache_is_used() {
-    local output="$(sccache --stop-server 2>&1 || true && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1)"; \
+    local bucket="${SCCACHE_BUCKET:-"$(grep 'bucket=' ~/.aws/config 2>/dev/null | sed 's/bucket=//' || echo)"}";
+    local region="${SCCACHE_REGION:-"$(grep 'region=' ~/.aws/config 2>/dev/null | sed 's/region=//' || echo "${AWS_DEFAULT_REGION:-}")"}";
+    local output="$(                    \
+    sccache --stop-server 2>&1 || true  \
+ && SCCACHE_NO_DAEMON=1                 \
+    SCCACHE_BUCKET=${bucket}            \
+    SCCACHE_REGION=${region}            \
+    sccache --show-stats 2>&1)"; \
     echo "output:"; echo "${output}";
     grep -qE 'Cache location \s+ s3' <<< "${output}";
 }
@@ -72,7 +80,14 @@ expect_s3_cache_is_used() {
 export -f expect_s3_cache_is_used;
 
 expect_local_disk_cache_is_used() {
-    local output="$(sccache --stop-server 2>&1 || true && SCCACHE_NO_DAEMON=1 sccache --show-stats 2>&1)"; \
+    local bucket="${SCCACHE_BUCKET:-"$(grep 'bucket=' ~/.aws/config 2>/dev/null | sed 's/bucket=//' || echo)"}";
+    local region="${SCCACHE_REGION:-"$(grep 'region=' ~/.aws/config 2>/dev/null | sed 's/region=//' || echo "${AWS_DEFAULT_REGION:-}")"}";
+    local output="$(                    \
+    sccache --stop-server 2>&1 || true  \
+ && SCCACHE_NO_DAEMON=1                 \
+    SCCACHE_BUCKET=${bucket}            \
+    SCCACHE_REGION=${region}            \
+    sccache --show-stats 2>&1)"; \
     echo "output:"; echo "${output}";
     grep -qE 'Cache location \s+ Local disk' <<< "${output}";
 }
