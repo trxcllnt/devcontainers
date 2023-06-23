@@ -6,13 +6,10 @@ inputs:
   args: {type: string, required: true}
   gh_token: {type: string, defaut: '', required: false}
   vault_host: {type: string, defaut: '', required: false}
-  sccache_bucket_gh: {type: string, defaut: '', required: false}
-  sccache_region_gh: {type: string, defaut: '', required: false}
-  aws_session_token: {type: string, defaut: '', required: false}
-  aws_access_key_id: {type: string, defaut: '', required: false}
-  aws_secret_access_key: {type: string, defaut: '', required: false}
-  sccache_bucket_ci: {type: string, defaut: '', required: false}
-  sccache_region_ci: {type: string, defaut: '', required: false}
+  rw_sccache_bucket: {type: string, defaut: '', required: false}
+  rw_sccache_region: {type: string, defaut: '', required: false}
+  ro_sccache_bucket: {type: string, defaut: '', required: false}
+  ro_sccache_region: {type: string, defaut: '', required: false}
 
 runs:
   using: composite
@@ -31,7 +28,7 @@ runs:
       if: github.repository == 'rapidsai/devcontainers'
       with:
         aws-region: us-east-2
-        role-duration-seconds: 3600 # 1 hour
+        role-duration-seconds: "300" # 5 minutes
         role-to-assume: arn:aws:iam::279114543810:role/gha-oidc-rapidsai
 
     - name: Test feature
@@ -40,13 +37,10 @@ runs:
         devcontainer features test ${{ inputs.args }} ./features;
       env:
         NODE_NO_WARNINGS: 1
-        VAULT_S3_TTL: "3600s" # 1 hour
+        VAULT_S3_TTL: "300" # 5 minutes
         gh_token: "${{ inputs.gh_token }}"
         vault_host: "${{ inputs.vault_host }}"
-        sccache_bucket_gh: "${{ inputs.sccache_bucket_gh }}"
-        sccache_region_gh: "${{ inputs.sccache_region_gh }}"
-        aws_session_token: "${{ inputs.aws_session_token }}"
-        aws_access_key_id: "${{ inputs.aws_access_key_id }}"
-        aws_secret_access_key: "${{ inputs.aws_secret_access_key }}"
-        sccache_bucket_ci: "${{ inputs.sccache_bucket_ci }}"
-        sccache_region_ci: "${{ inputs.sccache_region_ci }}"
+        rw_sccache_bucket: "${{ inputs.rw_sccache_bucket }}"
+        rw_sccache_region: "${{ inputs.rw_sccache_region }}"
+        ro_sccache_bucket: "${{ inputs.ro_sccache_bucket }}"
+        ro_sccache_region: "${{ inputs.ro_sccache_region }}"

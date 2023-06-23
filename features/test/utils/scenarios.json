@@ -6,13 +6,10 @@
       "gh_token": "${localEnv:gh_token}",
       "vault_host": "${localEnv:vault_host}",
       "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
-      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
-      "sccache_region_gh": "${localEnv:sccache_region_gh}",
-      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
-      "sccache_region_ci": "${localEnv:sccache_region_ci}",
-      "aws_access_key_id": "${localEnv:aws_access_key_id}",
-      "aws_session_token": "${localEnv:aws_session_token}",
-      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+      "rw_sccache_bucket": "${localEnv:rw_sccache_bucket}",
+      "rw_sccache_region": "${localEnv:rw_sccache_region}",
+      "ro_sccache_bucket": "${localEnv:ro_sccache_bucket}",
+      "ro_sccache_region": "${localEnv:ro_sccache_region}"
     },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
@@ -31,7 +28,7 @@
       "cmake": {},
       "ninja": {},
       "sccache": {
-        "version": "0.5.0"
+        "version": "0.5.3"
       },
       "utils": {}
     },
@@ -54,13 +51,10 @@
       "gh_token": "${localEnv:gh_token}",
       "vault_host": "${localEnv:vault_host}",
       "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
-      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
-      "sccache_region_gh": "${localEnv:sccache_region_gh}",
-      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
-      "sccache_region_ci": "${localEnv:sccache_region_ci}",
-      "aws_access_key_id": "${localEnv:aws_access_key_id}",
-      "aws_session_token": "${localEnv:aws_session_token}",
-      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+      "rw_sccache_bucket": "${localEnv:rw_sccache_bucket}",
+      "rw_sccache_region": "${localEnv:rw_sccache_region}",
+      "ro_sccache_bucket": "${localEnv:ro_sccache_bucket}",
+      "ro_sccache_region": "${localEnv:ro_sccache_region}"
     },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
@@ -79,7 +73,7 @@
       "cmake": {},
       "ninja": {},
       "sccache": {
-        "version": "0.5.0"
+        "version": "0.5.3"
       },
       "utils": {}
     },
@@ -102,13 +96,10 @@
       "gh_token": "${localEnv:gh_token}",
       "vault_host": "${localEnv:vault_host}",
       "VAULT_S3_TTL": "${localEnv:VAULT_S3_TTL}",
-      "sccache_bucket_gh": "${localEnv:sccache_bucket_gh}",
-      "sccache_region_gh": "${localEnv:sccache_region_gh}",
-      "sccache_bucket_ci": "${localEnv:sccache_bucket_ci}",
-      "sccache_region_ci": "${localEnv:sccache_region_ci}",
-      "aws_access_key_id": "${localEnv:aws_access_key_id}",
-      "aws_session_token": "${localEnv:aws_session_token}",
-      "aws_secret_access_key": "${localEnv:aws_secret_access_key}"
+      "rw_sccache_bucket": "${localEnv:rw_sccache_bucket}",
+      "rw_sccache_region": "${localEnv:rw_sccache_region}",
+      "ro_sccache_bucket": "${localEnv:ro_sccache_bucket}",
+      "ro_sccache_region": "${localEnv:ro_sccache_region}"
     },
     "features": {
       "ghcr.io/devcontainers/features/common-utils:2": {
@@ -127,7 +118,7 @@
       "cmake": {},
       "ninja": {},
       "sccache": {
-        "version": "0.5.0"
+        "version": "0.5.3"
       },
       "utils": {}
     },
