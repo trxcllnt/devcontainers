@@ -1,5 +1,20 @@
 #! /usr/bin/env bash
 
+s3_bucket_args() {
+    cat <<____EOF
+        --region='${SCCACHE_REGION:-"${AWS_DEFAULT_REGION:-}"}'
+        --bucket='${SCCACHE_BUCKET:-}'
+____EOF
+}
+
+s3_bucket_auth() {
+    cat <<____EOF
+        --aws_access_key_id='$(grep 'aws_access_key_id=' ~/.aws/credentials 2>/dev/null | sed 's/aws_access_key_id=//' || echo)'
+        --aws_session_token='$(grep 'aws_session_token=' ~/.aws/credentials 2>/dev/null | sed 's/aws_session_token=//' || echo)'
+        --aws_secret_access_key='$(grep 'aws_secret_access_key=' ~/.aws/credentials 2>/dev/null | sed 's/aws_secret_access_key=//' || echo)'
+____EOF
+}
+
 init_vault_s3_creds() {
 
     set -euo pipefail;
@@ -13,13 +28,10 @@ init_vault_s3_creds() {
                 if ! devcontainer-utils-vault-s3-creds-test 2>&1 >/dev/null; then
                     devcontainer-utils-vault-s3-creds-generate;
                 fi
-                # Store creds in ~/.aws dir
+                # Persist creds in ~/.aws dir
                 devcontainer-utils-vault-s3-creds-persist <<< "
-                    --bucket='${SCCACHE_BUCKET:-}'
-                    --region='${SCCACHE_REGION:-"${AWS_DEFAULT_REGION:-}"}'
-                    --aws_access_key_id='$(grep 'aws_access_key_id=' ~/.aws/credentials 2>/dev/null | sed 's/aws_access_key_id=//' || echo)'
-                    --aws_session_token='$(grep 'aws_session_token=' ~/.aws/credentials 2>/dev/null | sed 's/aws_session_token=//' || echo)'
-                    --aws_secret_access_key='$(grep 'aws_secret_access_key=' ~/.aws/credentials 2>/dev/null | sed 's/aws_secret_access_key=//' || echo)'
+                    $(s3_bucket_args)
+                    $(s3_bucket_auth)
                 ";
                 # Install a crontab to refresh the credentials
                 devcontainer-utils-vault-s3-creds-schedule;
@@ -29,25 +41,18 @@ init_vault_s3_creds() {
                     # bucket is read + write with the current credentials
                     [0] )
                         devcontainer-utils-vault-s3-creds-persist <<< "
-                            --bucket='${SCCACHE_BUCKET:-}'
-                            --region='${SCCACHE_REGION:-"${AWS_DEFAULT_REGION:-}"}'
-                            --aws_access_key_id='$(grep 'aws_access_key_id=' ~/.aws/credentials 2>/dev/null | sed 's/aws_access_key_id=//' || echo)'
-                            --aws_session_token='$(grep 'aws_session_token=' ~/.aws/credentials 2>/dev/null | sed 's/aws_session_token=//' || echo)'
-                            --aws_secret_access_key='$(grep 'aws_secret_access_key=' ~/.aws/credentials 2>/dev/null | sed 's/aws_secret_access_key=//' || echo)'
-                        ";
-                        ;;
+                            $(s3_bucket_args)
+                            $(s3_bucket_auth)
+                        ";;
                     # bucket is read-only and should be accessed without credentials
                     [2] )
                         devcontainer-utils-vault-s3-creds-persist <<< "
-                            --bucket='${SCCACHE_BUCKET:-}'
-                            --region='${SCCACHE_REGION:-"${AWS_DEFAULT_REGION:-}"}'
                             --no_credentials
-                        ";
-                        ;;
+                            $(s3_bucket_args)
+                        ";;
                       # bucket is inaccessible
                       * )
-                        devcontainer-utils-vault-s3-creds-persist <<< "--no_bucket --no_region";
-                        ;;
+                        devcontainer-utils-vault-s3-creds-persist <<< "--no_bucket --no_region";;
                 esac
             fi
         fi
