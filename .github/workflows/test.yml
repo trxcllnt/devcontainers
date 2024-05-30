@@ -167,7 +167,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(format('[{0}]', join(needs.image-matrix.outputs.*.includes.*))) }}
-    uses: ./.github/workflows/build-test-and-push-${{matrix.os}}-images.yml
+    uses: ./.github/workflows/build-test-and-push-linux-image.yml
     with:
       push: false
       os: "${{ matrix.os }}"
