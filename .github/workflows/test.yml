@@ -166,8 +166,9 @@ jobs:
     secrets: inherit
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(format('[{0}]', join(needs.image-matrix.outputs.*.includes.*))) }}
-    uses: ./.github/workflows/build-test-and-push-linux-image.yml
+      matrix:
+        includes: ${{ fromJSON(format('[{0}]', join(needs.image-matrix.outputs.*.includes.*))) }}
+    uses: ./.github/workflows/build-test-and-push-${{matrix.os}}-image.yml
     with:
       push: false
       os: "${{ matrix.os }}"
