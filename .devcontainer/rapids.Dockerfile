@@ -53,6 +53,7 @@ env SCCACHE_SERVER_LOG="sccache=debug"
 
 ENV SCCACHE_REGION="us-east-2"
 ENV SCCACHE_BUCKET="rapids-sccache-devs"
+ENV SCCACHE_IDLE_TIMEOUT=900
 ENV AWS_ROLE_ARN="arn:aws:iam::279114543810:role/nv-gha-token-sccache-devs"
 
 env INFER_NUM_DEVICE_ARCHITECTURES=1
