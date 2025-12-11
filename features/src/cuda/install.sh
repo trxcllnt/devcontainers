@@ -38,7 +38,7 @@ fi
 
 get_cuda_deb() {
     local deb="$(                                 \
-        wget --no-hsts -q -O- "${1}/Packages"     \
+        wget --no-hsts -q --tries=3 --timeout=30 -O- "${1}/Packages"     \
     | grep -P "^Filename: \./${2}(.*)\.deb$"      \
     | sort -Vr | head -n1 | cut -d' ' -f2         \
     )";
@@ -46,7 +46,7 @@ get_cuda_deb() {
         echo "Error: No matching .deb found for '${1}' and '${2}'" >&2
         return 1
     fi
-    wget --no-hsts -q -O "/tmp/${deb#./}" "${1}/${deb#./}";
+    wget --no-hsts -q --tries=3 --timeout=30 -O "/tmp/${deb#./}" "${1}/${deb#./}";
     echo -n "/tmp/${deb#./}";
 }
 
