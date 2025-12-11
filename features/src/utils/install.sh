@@ -206,8 +206,12 @@ if test -n "${USERNAME:+x}"; then
             ;
         NV_GHA_AWS_VERSION=latest
         find_version_from_git_tags NV_GHA_AWS_VERSION https://github.com/nv-gha-runners/gh-nv-gha-aws;
-        wget --no-hsts -q -O "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws" \
-            "https://github.com/nv-gha-runners/gh-nv-gha-aws/releases/download/v${NV_GHA_AWS_VERSION}/gh-nv-gha-aws_v${NV_GHA_AWS_VERSION}_linux-$(dpkg --print-architecture | awk -F'-' '{print $NF}')";
+        echo "Downloading gh-nv-gha-aws v${NV_GHA_AWS_VERSION}...";
+        wget --no-hsts -q --tries=3 --timeout=30 -O "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws" \
+            "https://github.com/nv-gha-runners/gh-nv-gha-aws/releases/download/v${NV_GHA_AWS_VERSION}/gh-nv-gha-aws_v${NV_GHA_AWS_VERSION}_linux-$(dpkg --print-architecture | awk -F'-' '{print $NF}')" || {
+            echo "ERROR: Failed to download gh-nv-gha-aws after 3 attempts";
+            exit 1;
+        };
         chmod 0755 "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws";
         cat <<EOF >"$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/manifest.yml"
 owner: nv-gha-runners
