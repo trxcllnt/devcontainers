@@ -96,7 +96,7 @@ build_and_install_openmpi() {
 
     local -r major_minor="$(grep -o '^[0-9]*.[0-9]*' <<< "${OPENMPI_VERSION}")";
 
-    wget --no-hsts -q -O- "https://download.open-mpi.org/release/open-mpi/v${major_minor}/openmpi-${OPENMPI_VERSION}.tar.gz" \
+    wget --no-hsts -q --tries=3 --timeout=30 -O- "https://download.open-mpi.org/release/open-mpi/v${major_minor}/openmpi-${OPENMPI_VERSION}.tar.gz" \
   | tar -C /tmp/ompi -zf - --strip-components=1 -x;
 
     (

@@ -65,7 +65,7 @@ DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_${DOXY
 
 (
   TEMPDEST=$(mktemp -d)
-  wget --no-hsts -q "$DOXYGEN_URL" -O "$TEMPDEST/doxygen.tar.gz"
+  wget --no-hsts -q --tries=3 --timeout=30 "$DOXYGEN_URL" -O "$TEMPDEST/doxygen.tar.gz"
   cd "$TEMPDEST"
   tar --strip-components=1 -xf doxygen.tar.gz
   make install -j

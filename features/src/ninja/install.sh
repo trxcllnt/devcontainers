@@ -23,15 +23,21 @@ if test "$(uname -p)" = "aarch64"; then
     _name+="-aarch64";
 fi
 
-# Install Ninja
-wget --no-hsts -q -O /tmp/ninja-linux.zip \
-    "https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${_name}.zip";
+# Install Ninja with retries for network reliability
+echo "Downloading ninja v${NINJA_VERSION}...";
+wget --no-hsts -q --tries=3 --timeout=30 -O /tmp/ninja-linux.zip \
+    "https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${_name}.zip" || {
+    echo "ERROR: Failed to download ninja after 3 attempts";
+    exit 1;
+};
 unzip -d /usr/bin /tmp/ninja-linux.zip;
 chmod +x /usr/bin/ninja;
 
-# Install Ninja bash completions
-wget --no-hsts -q -O /usr/share/bash-completion/completions/ninja \
-    "https://github.com/ninja-build/ninja/raw/v${NINJA_VERSION}/misc/bash-completion";
+# Install Ninja bash completions (non-fatal if it fails)
+echo "Downloading ninja bash-completion...";
+wget --no-hsts -q --tries=3 --timeout=30 -O /usr/share/bash-completion/completions/ninja \
+    "https://github.com/ninja-build/ninja/raw/v${NINJA_VERSION}/misc/bash-completion" || \
+    echo "Warning: Failed to download ninja bash-completion (non-fatal)";
 
 # Clean up
 rm -rf /var/tmp/*;

@@ -25,7 +25,7 @@ if ! command -V yq >/dev/null 2>&1; then
 
     YQ_VERSION=4.46.1;
     find_version_from_git_tags YQ_VERSION https://github.com/mikefarah/yq;
-    while ! wget --no-hsts -q -O- "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/${YQ_BINARY}.tar.gz" | tar -C /usr/bin -zf - -x ./${YQ_BINARY} --transform="s/${YQ_BINARY}/yq/"; do
+    while ! wget --no-hsts -q --tries=3 --timeout=30 -O- "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/${YQ_BINARY}.tar.gz" | tar -C /usr/bin -zf - -x ./${YQ_BINARY} --transform="s/${YQ_BINARY}/yq/"; do
         echo "(!) YQ version ${YQ_VERSION} failed to download. Attempting to fall back one version to retry...";
         find_prev_version_from_git_tags YQ_VERSION https://github.com/mikefarah/yq;
     done
