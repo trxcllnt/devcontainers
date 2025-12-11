@@ -207,9 +207,14 @@ if test -n "${USERNAME:+x}"; then
         NV_GHA_AWS_VERSION=latest
         find_version_from_git_tags NV_GHA_AWS_VERSION https://github.com/nv-gha-runners/gh-nv-gha-aws;
         echo "Downloading gh-nv-gha-aws v${NV_GHA_AWS_VERSION}...";
-        wget --no-hsts -q --tries=3 --timeout=30 -O "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws" \
+        # Use verbose output for debugging, explicit CA cert for mitmproxy, and retry delays
+        wget --no-hsts --verbose --tries=3 --timeout=30 --waitretry=5 \
+            --ca-certificate=/etc/ssl/certs/ca-certificates.crt \
+            --dns-timeout=10 --connect-timeout=30 \
+            -O "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws" \
             "https://github.com/nv-gha-runners/gh-nv-gha-aws/releases/download/v${NV_GHA_AWS_VERSION}/gh-nv-gha-aws_v${NV_GHA_AWS_VERSION}_linux-$(dpkg --print-architecture | awk -F'-' '{print $NF}')" || {
-            echo "ERROR: Failed to download gh-nv-gha-aws after 3 attempts";
+            echo "ERROR: Failed to download gh-nv-gha-aws after 3 attempts with 5s delays";
+            echo "URL attempted: https://github.com/nv-gha-runners/gh-nv-gha-aws/releases/download/v${NV_GHA_AWS_VERSION}/gh-nv-gha-aws_v${NV_GHA_AWS_VERSION}_linux-$(dpkg --print-architecture | awk -F'-' '{print $NF}')";
             exit 1;
         };
         chmod 0755 "$USERHOME/.local/share/gh/extensions/gh-nv-gha-aws/gh-nv-gha-aws";
