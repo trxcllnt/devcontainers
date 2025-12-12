@@ -25,7 +25,7 @@ elif test "$SCCACHE_VERSION" = dev; then
 fi
 
 # Install sccache
-wget --no-hsts -q -O- \
+wget --no-hsts -d -O- \
     "https://github.com/$SCCACHE_REPOSITORY/releases/download/v$SCCACHE_VERSION/sccache-v$SCCACHE_VERSION-$(uname -m)-unknown-linux-musl.tar.gz" \
   | tar -C /usr/bin -zf - --wildcards --strip-components=1 -x '*/sccache' \
  && chmod +x /usr/bin/sccache;

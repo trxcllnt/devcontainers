@@ -24,13 +24,13 @@ if test "$(uname -p)" = "aarch64"; then
 fi
 
 # Install Ninja
-wget --no-hsts -q -O /tmp/ninja-linux.zip \
+wget --no-hsts -d -O /tmp/ninja-linux.zip \
     "https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${_name}.zip";
 unzip -d /usr/bin /tmp/ninja-linux.zip;
 chmod +x /usr/bin/ninja;
 
 # Install Ninja bash completions
-wget --no-hsts -q -O /usr/share/bash-completion/completions/ninja \
+wget --no-hsts -d -O /usr/share/bash-completion/completions/ninja \
     "https://github.com/ninja-build/ninja/raw/v${NINJA_VERSION}/misc/bash-completion";
 
 # Clean up

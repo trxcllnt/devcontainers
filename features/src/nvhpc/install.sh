@@ -28,7 +28,7 @@ fi
 
 echo "Downloading NVHPC gpg key...";
 
-wget --no-hsts -q -O- https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK \
+wget --no-hsts -d -O- https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK \
    | gpg --dearmor -o /etc/apt/trusted.gpg.d/nvidia-hpcsdk-archive-keyring.gpg;
 
 chmod 0644 /etc/apt/trusted.gpg.d/*.gpg || true;

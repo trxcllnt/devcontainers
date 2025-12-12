@@ -131,7 +131,7 @@ if [[ -n "${CODENAME}" ]]; then
 
     retry_count=0;
 
-    while ! wget --no-hsts -q --method=HEAD \
+    while ! wget --no-hsts -d --method=HEAD \
             "${BASE_URL}/${CODENAME}/dists/llvm-toolchain${LINKNAME}${LLVM_VERSION_PATTERNS[$LLVM_VERSION]}/Release" >/dev/null 2>&1; do
         if test $(( retry_count++ )) -ge 5; then
             LLVM_VERSION_STRING=
@@ -145,7 +145,7 @@ if [[ -n "${CODENAME}" ]]; then
     REPO_NAME="deb ${BASE_URL}/${CODENAME}/  llvm-toolchain${LINKNAME}${LLVM_VERSION_STRING} main"
 
     # check if the repository exists for the distro and version
-    if ! wget --no-hsts -q --method=HEAD "${BASE_URL}/${CODENAME}" >/dev/null 2>&1; then
+    if ! wget --no-hsts -d --method=HEAD "${BASE_URL}/${CODENAME}" >/dev/null 2>&1; then
         if [[ -n "${CODENAME_FROM_ARGUMENTS}" ]]; then
             echo "Specified codename '${CODENAME}' is not supported by this script."
         else
@@ -160,7 +160,7 @@ fi
 
 if [ ! -f /etc/apt/trusted.gpg.d/apt.llvm.org.asc ]; then
     # download GPG key once
-    wget --no-hsts -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+    wget --no-hsts -dO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
 fi
 
 if [[ -z "`apt-key list 2> /dev/null | grep -i llvm`" ]]; then

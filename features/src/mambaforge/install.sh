@@ -18,7 +18,7 @@ if [[ "$MINIFORGE_VERSION" == latest ]]; then
     find_version_from_git_tags MINIFORGE_VERSION https://github.com/conda-forge/miniforge "tags/" "." "-[0-9]+" "true";
 fi
 
-wget --no-hsts -q -O /tmp/miniforge.sh \
+wget --no-hsts -d -O /tmp/miniforge.sh \
     "https://github.com/conda-forge/miniforge/releases/download/${MINIFORGE_VERSION}/Miniforge3-${MINIFORGE_VERSION}-Linux-$(uname -p).sh";
 echo "Installing Miniforge...";
 
