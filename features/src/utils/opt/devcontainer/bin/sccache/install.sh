@@ -40,11 +40,25 @@ _install_sccache() {
     fi
 
     sccache_bin_dir="$(dirname "$(which sccache 2>/dev/null || echo "/usr/bin/sccache")")";
-    old_sccache_version="$(sccache --version | cut -d' ' -f2 || echo "sccache not installed")";
+
+    if test "$new_sccache_version" = latest; then
+        # First try to download with the new stable URL (no GitHub API calls necessary)
+        # If this 404's, try `gh release download` below
+        local sccache_latest_stable_url="https://github.com/$github_repo/releases/latest/download/sccache-$(uname -m)-unknown-linux-musl.tar.gz";
+        if wget --no-hsts -q --method=HEAD --tries=10 "$sccache_latest_stable_url"; then
+            echo "Downloading latest sccache..." >&2
+            if wget --no-hsts -q -O- --tries=10 "$sccache_latest_stable_url" \
+             | sudo tar -C "$sccache_bin_dir" -zf - --overwrite --wildcards --strip-components=1 -x '*/sccache'; then
+                # Verify installation
+                echo "Installed $(sccache --version) to $(which sccache)" >&2
+                return 0
+            fi
+        fi
+    fi
 
     attempts=0
     while test "${new_sccache_version:-latest}" = latest; do
-        new_sccache_version="$(wget --no-hsts -q -O- "https://api.github.com/repos/${github_repo}/releases/latest" | jq -r '.tag_name | sub("^v"; "")')";
+        new_sccache_version="$(gh api repos/${github_repo}/releases/latest --jq '.tag_name | sub("^v"; "")')";
         if test -n "${new_sccache_version:+x}"; then
             break;
         elif test "$((attempts++))" -lt 10; then
@@ -57,11 +71,13 @@ _install_sccache() {
         fi
     done
 
+    old_sccache_version="$(sccache --version 2>/dev/null | cut -d' ' -f2 || echo "sccache not installed")";
+
     attempts=0;
     if test -n "${old_sccache_version##"${new_sccache_version}"}"; then
         # Install sccache to "$sccache_bin_dir"
         echo "Downloading sccache v${new_sccache_version}..." >&2
-        while ! wget --no-hsts -q -O- "https://github.com/${github_repo}/releases/download/v${new_sccache_version}/sccache-v${new_sccache_version}-$(uname -m)-unknown-linux-musl.tar.gz" \
+        while ! gh release download "v${new_sccache_version}" -R "${github_repo}" -p "sccache-v${new_sccache_version}-$(uname -m)-unknown-linux-musl.tar.gz" -O- \
               | sudo tar -C "$sccache_bin_dir" -zf - --overwrite --wildcards --strip-components=1 -x '*/sccache'; do
             if test "$((attempts++))" -lt 10; then
                 echo "(!) Failed to download sccache v${new_sccache_version}. Retrying (${attempts}/10)..." >&2;
