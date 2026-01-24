@@ -107,7 +107,7 @@ jobs:
           # Create and push the multiarch manifest without the OS in the tag
           docker buildx imagetools create --tag "${name/%-${os//:/}}" "$hash_amd64" "$hash_arm64";
           # Create and push the multiarch manifest without RAPIDS version (main branch only)
-          if [[ "${ref_name}" == "main" ]]; then
+          if [[ "${ref_name}" == "bdice-dual-publish" ]]; then
             sleep 5;
             docker buildx imagetools create --tag "${repo}:latest-${base_tag}" "$hash_amd64" "$hash_arm64";
             sleep 5;

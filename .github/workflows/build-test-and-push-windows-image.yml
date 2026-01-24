@@ -96,7 +96,7 @@ jobs:
           docker push ${{ steps.info.outputs.repo }}:${{ steps.info.outputs.tag_without_os }}
           docker push ${{ steps.info.outputs.repo }}:${{ steps.info.outputs.tag }}
 
-      - if: inputs.push == 'true' && github.ref_name == 'main'
+      - if: inputs.push == 'true' && github.ref_name == 'bdice-dual-publish'
         name: Push latest-${{ steps.info.outputs.base_tag }}
         shell: powershell
         run: |
